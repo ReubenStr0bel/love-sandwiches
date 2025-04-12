@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+from pprint import pprint
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -11,6 +12,7 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('love_sandwiches')
+
 
 def get_sales_data():
     """
@@ -30,6 +32,7 @@ def get_sales_data():
     
     return sales_data
 
+
 def validate_data(values):
     """
     Tries to convert all string values to integers
@@ -48,6 +51,7 @@ def validate_data(values):
     
     return True
 
+
 def update_sales_worksheet(data):
     """
     Update sales worksheet, add new row with new data
@@ -58,6 +62,25 @@ def update_sales_worksheet(data):
     print("Sales worksheet updated successfully\n")
     
 
-data = get_sales_data()
-sales_data = [int(num) for num in data]
-update_sales_worksheet(sales_data)
+def calculate_surplus_data(sales_row):
+    """
+    Calculate the surplus for each type of item
+    """
+    print("Calculating surplus...")
+    stock = SHEET.worksheet("stock").get_all_values()
+    stock_row = stock[-1]
+    print(stock_row)
+
+
+def main():
+    """
+    Add all program functions
+    """
+    data = get_sales_data()
+    sales_data = [int(num) for num in data]
+    update_sales_worksheet(sales_data)
+    calculate_surplus_data(sales_data)
+
+
+print("Welcome to Love Sandwiches data automation")
+main()
